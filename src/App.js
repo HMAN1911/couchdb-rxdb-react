@@ -3,13 +3,30 @@ import logo from './logo.svg';
 import './App.css';
 
 import RxDB from 'rxdb';
+import faker from 'faker';
 
 RxDB.plugin(require('pouchdb-adapter-http'));
 RxDB.plugin(require('pouchdb-adapter-websql'));
 
 class App extends Component {
   state = {
-    docs: []
+    docs: [],
+    db: {},
+    schema: {
+      disableKeyCompression: true,
+      version: 0,
+      title: 'human schema no compression',
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string'
+        },
+        lastName: {
+          type: 'string'
+        }
+      },
+      required: ['firstName', 'lastName']
+    }
   }
 
   async componentWillMount() {
@@ -36,6 +53,8 @@ class App extends Component {
       multiInstance: true         // <- multiInstance (default: true)
     });
 
+    this.setState({ db })
+
     console.dir(db);
 
     const collection = await db.collection({
@@ -60,6 +79,24 @@ class App extends Component {
 
   }
 
+  addNew = () => {
+    this.state.db.collections.heroes.insert({
+      firstName: this.firstNameInput.value,
+      lastName: this.lastNameInput.value
+    })
+  }
+
+  kill = async (id) => {
+    try {
+      const q = this.state.db.collections.heroes.findOne(id)
+      await q.remove(); 
+    }
+    catch(error) {
+      console.log('i got you')
+      console.log(error)
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -71,8 +108,17 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         {
-          this.state.docs.map(doc => <div>{JSON.stringify(doc)}</div>)
+          this.state.docs.map(doc => <div>{JSON.stringify(doc)}<button onClick={() => this.kill(doc._id)}>kill it</button></div>)
         }
+        <label>first name</label>
+        <input
+          ref={(input) => { this.firstNameInput = input; }} />
+        />
+        <label>last name</label>
+        <input 
+          ref={(input) => { this.lastNameInput = input; }} />
+        />
+        <button onClick={this.addNew}>Add it</button>
       </div>
     );
   }

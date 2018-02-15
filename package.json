@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2017": "^6.24.1",
+    "faker": "^4.1.0",
     "pouchdb-adapter-http": "^6.4.3",
     "pouchdb-adapter-websql": "^6.4.3",
     "react": "^16.2.0",
