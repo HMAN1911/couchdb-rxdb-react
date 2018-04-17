@@ -63,7 +63,7 @@ class App extends Component {
     });
 
     collection.sync({
-      remote: 'http://127.0.0.1:5984/test', // remote database. This can be the serverURL, another RxCollection or a PouchDB-instance
+      remote: 'http://127.0.0.1:3232/test', // remote database. This can be the serverURL, another RxCollection or a PouchDB-instance
       waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
       direction: {                          // direction (optional) to specify sync-directions
         pull: true, // default=true
@@ -71,7 +71,14 @@ class App extends Component {
       },
       options: {                             // sync-options (optional) from https://pouchdb.com/api.html#replication
         live: true,
-        retry: true
+        retry: true,
+        withCredentials: false,
+        ajax: {
+          withCredentials: false,
+          headers: {
+            authorization: 'Bearer fsdsfdsjklhflajsdkfhblsdkahs'
+          }
+        }
       },
     });
 
